@@ -46,26 +46,50 @@ class AntispamService
         $entities = new Entities(Arr::get($requestBase, 'entities'));
 
         foreach ($entities->getEntities() as $entity) {
-            if (!$entity->isUrl()) {
-                continue;
+            if ($entity->isUrl()) {
+                $entityUrl = $entity->getText(Arr::get($requestBase, 'text'));
+
+                if ($entityUrl) {
+                    $allowedDomains = config('antispam.allowedDomains');
+                    $entityUrlHost  = mb_strtolower(parse_url($entityUrl, PHP_URL_HOST) ?? $entityUrl);
+
+                    if (!in_array($entityUrlHost, $allowedDomains)) {
+                        self::deleteMessage(Arr::get($requestBase, 'message_id'), $chatId);
+
+                        return new JsonResponse(false);
+                    }
+                }
             }
+            else if ($entity->isTextMention()) {
+                $entityUserId = $entity->getUserId();
 
-            $entityUrl = $entity->getText(Arr::get($requestBase, 'text'));
+                if ($entityUserId && !self::isChatMember($entityUserId, $chatId)) {
+                    self::deleteMessage(Arr::get($requestBase, 'message_id'), $chatId);
 
-            if (!$entityUrl) {
-                continue;
-            }
-
-            $allowedDomains = config('antispam.allowedDomains');
-            $entityUrlHost  = mb_strtolower(parse_url($entityUrl, PHP_URL_HOST) ?? $entityUrl);
-
-            if (!in_array($entityUrlHost, $allowedDomains)) {
-                self::deleteMessage(Arr::get($requestBase, 'message_id'), $chatId);
-
-                return new JsonResponse(false);
+                    return new JsonResponse(false);
+                }
             }
         }
 
         return new JsonResponse(true);
+    }
+
+    public static function isChatMember(int $userId, int $chatId): bool
+    {
+        try {
+            $guzzleClient = new Client();
+            $guzzleClient->get(sprintf('https://api.telegram.org/bot%s/getChatMember', env('TELEGRAM_BOT_TOKEN')), [
+                'query' => [
+                    'user_id' => $userId,
+                    'chat_id' => $chatId,
+                ],
+            ]);
+
+            return true;
+        }
+        catch (ClientException) {
+        }
+
+        return false;
     }
 }

@@ -6,5 +6,6 @@ return [
     'allowedDomains' => [
         'twitch.tv',
         'discord.com',
+        'thetraveler.group',
     ],
 ];
