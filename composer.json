@@ -8,7 +8,8 @@
 
     "require": {
         "php": "^8.1",
-        "laravel/lumen-framework": "^9.1.2"
+        "laravel/lumen-framework": "^9.1.2",
+        "guzzlehttp/guzzle": "^7.5.0"
     },
 
     "require-dev": {
@@ -17,9 +18,7 @@
 
     "autoload": {
         "psr-4": {
-            "Rentalhost\\TelegramAntispam\\": "app/",
-            "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Rentalhost\\TelegramAntispam\\": "app/"
         }
     },
     "autoload-dev": {
@@ -40,7 +39,8 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "process-timeout": 0
     },
 
     "minimum-stability": "dev",

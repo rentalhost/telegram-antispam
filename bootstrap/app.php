@@ -12,12 +12,12 @@ date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
 
 $app = new Laravel\Lumen\Application(dirname(__DIR__));
 $app->withFacades();
-// $app->withEloquent();
 
 $app->singleton(Illuminate\Contracts\Debug\ExceptionHandler::class, Rentalhost\TelegramAntispam\Exceptions\Handler::class);
 $app->singleton(Illuminate\Contracts\Console\Kernel::class, Rentalhost\TelegramAntispam\Console\Kernel::class);
 
 $app->configure('app');
+$app->configure('antispam');
 
 Controller::initializeRoutes();
 
