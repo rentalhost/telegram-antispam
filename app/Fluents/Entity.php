@@ -11,6 +11,7 @@ use Illuminate\Support\Fluent;
  * @property int            $length
  * @property string         $type
  * @property array{id: int} $user
+ * @property string         $url
  */
 class Entity
     extends Fluent
@@ -23,6 +24,11 @@ class Entity
     public function getUserId(): int|null
     {
         return $this->user['id'] ?? null;
+    }
+
+    public function isTextLink(): bool
+    {
+        return $this->type === 'text_link';
     }
 
     public function isTextMention(): bool

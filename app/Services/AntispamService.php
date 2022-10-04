@@ -60,6 +60,16 @@ class AntispamService
                     }
                 }
             }
+            else if ($entity->isTextLink()) {
+                $allowedDomains = config('antispam.allowedDomains');
+                $entityUrlHost  = mb_strtolower(parse_url($entity->url, PHP_URL_HOST));
+
+                if (!in_array($entityUrlHost, $allowedDomains)) {
+                    self::deleteMessage(Arr::get($requestBase, 'message_id'), $chatId);
+
+                    return new JsonResponse(false);
+                }
+            }
             else if ($entity->isTextMention()) {
                 $entityUserId = $entity->getUserId();
 
