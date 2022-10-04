@@ -7,5 +7,8 @@ return [
         'twitch.tv',
         'discord.com',
         'thetraveler.group',
+        'raid.report',
+        'dungeon.report',
+        'grandmaster.report',
     ],
 ];
