@@ -10,5 +10,9 @@ return [
         'raid.report',
         'dungeon.report',
         'grandmaster.report',
+
+        // Youtube related.
+        'youtube.com',
+        'youtu.be',
     ],
 ];

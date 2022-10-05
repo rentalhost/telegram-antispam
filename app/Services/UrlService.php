@@ -8,7 +8,7 @@ class UrlService
 {
     private static function normalizeUrl(string $url): string
     {
-        return strtolower(preg_replace('/^www./', '', parse_url($url, PHP_URL_HOST) ?? $url));
+        return strtolower(preg_replace('/^(www|m)./', '', parse_url($url, PHP_URL_HOST) ?? $url));
     }
 
     public static function isDomainAllowed(string $url): bool
