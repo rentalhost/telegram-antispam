@@ -49,22 +49,14 @@ class AntispamService
             if ($entity->isUrl()) {
                 $entityUrl = $entity->getText(Arr::get($requestBase, 'text'));
 
-                if ($entityUrl) {
-                    $allowedDomains = config('antispam.allowedDomains');
-                    $entityUrlHost  = mb_strtolower(parse_url($entityUrl, PHP_URL_HOST) ?? $entityUrl);
+                if ($entityUrl && !UrlService::isDomainAllowed($entityUrl)) {
+                    self::deleteMessage(Arr::get($requestBase, 'message_id'), $chatId);
 
-                    if (!in_array($entityUrlHost, $allowedDomains)) {
-                        self::deleteMessage(Arr::get($requestBase, 'message_id'), $chatId);
-
-                        return new JsonResponse(false);
-                    }
+                    return new JsonResponse(false);
                 }
             }
             else if ($entity->isTextLink()) {
-                $allowedDomains = config('antispam.allowedDomains');
-                $entityUrlHost  = mb_strtolower(parse_url($entity->url, PHP_URL_HOST));
-
-                if (!in_array($entityUrlHost, $allowedDomains)) {
+                if (!UrlService::isDomainAllowed($entity->url)) {
                     self::deleteMessage(Arr::get($requestBase, 'message_id'), $chatId);
 
                     return new JsonResponse(false);
