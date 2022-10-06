@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rentalhost\TelegramAntispam\Fluents;
 
 use Illuminate\Support\Fluent;
+use Rentalhost\TelegramAntispam\Services\TelegramService;
 
 /**
  * @property int            $offset
@@ -18,7 +19,7 @@ class Entity
 {
     public function getText(string $text): string
     {
-        return mb_substr($text, $this->offset, $this->length);
+        return TelegramService::substr($text, $this->offset, $this->length);
     }
 
     public function getUserId(): int|null
