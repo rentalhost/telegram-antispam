@@ -13,6 +13,14 @@ use Rentalhost\TelegramAntispam\Fluents\Entities;
 
 class AntispamService
 {
+    private static function isTelegramUser(string $mention): bool
+    {
+        $haystack = file_get_contents('https://t.me/' . ltrim($mention, '@'));
+
+        return !str_contains($haystack, 'subscriber') &&
+               !str_contains($haystack, 'content=""');
+    }
+
     public static function deleteMessage(int $messageId, int $chatId): void
     {
         try {
@@ -66,6 +74,15 @@ class AntispamService
                 $entityUserId = $entity->getUserId();
 
                 if ($entityUserId && !self::isChatMember($entityUserId, $chatId)) {
+                    self::deleteMessage(Arr::get($requestBase, 'message_id'), $chatId);
+
+                    return new JsonResponse(false);
+                }
+            }
+            else if ($entity->isMention()) {
+                $entityMention = $entity->getText(Arr::get($requestBase, 'text'));
+
+                if ($entityMention && !self::isTelegramUser($entityMention)) {
                     self::deleteMessage(Arr::get($requestBase, 'message_id'), $chatId);
 
                     return new JsonResponse(false);

@@ -27,6 +27,11 @@ class Entity
         return $this->user['id'] ?? null;
     }
 
+    public function isMention(): bool
+    {
+        return $this->type === 'mention';
+    }
+
     public function isTextLink(): bool
     {
         return $this->type === 'text_link';
