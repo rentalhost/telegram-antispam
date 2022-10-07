@@ -4,8 +4,10 @@ declare(strict_types = 1);
 
 return [
     'allowedDomains' => [
-        'twitch.tv',
+        // The Traveler related.
         'thetraveler.group',
+
+        // Destiny report related.
         'raid.report',
         'dungeon.report',
         'grandmaster.report',
@@ -17,5 +19,12 @@ return [
         // Youtube related.
         'youtube.com',
         'youtu.be',
+
+        // Whatsapp related.
+        'chat.whatsapp.com',
+        'whatsapp.com',
+
+        // Others.
+        'twitch.tv',
     ],
 ];

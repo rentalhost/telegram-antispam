@@ -51,11 +51,17 @@ class AntispamService
             return new JsonResponse(true);
         }
 
-        $entities = new Entities(Arr::get($requestBase, 'entities'));
+        $entities = new Entities(
+            Arr::get($requestBase, 'entities') ??
+            Arr::get($requestBase, 'caption_entities')
+        );
 
         foreach ($entities->getEntities() as $entity) {
             if ($entity->isUrl()) {
-                $entityUrl = $entity->getText(Arr::get($requestBase, 'text'));
+                $entityUrl = $entity->getText(
+                    Arr::get($requestBase, 'text') ??
+                    Arr::get($requestBase, 'caption')
+                );
 
                 if ($entityUrl && !UrlService::isDomainAllowed($entityUrl)) {
                     self::deleteMessage(Arr::get($requestBase, 'message_id'), $chatId);
@@ -80,7 +86,10 @@ class AntispamService
                 }
             }
             else if ($entity->isMention()) {
-                $entityMention = $entity->getText(Arr::get($requestBase, 'text'));
+                $entityMention = $entity->getText(
+                    Arr::get($requestBase, 'text') ??
+                    Arr::get($requestBase, 'caption')
+                );
 
                 if ($entityMention && !self::isTelegramUser($entityMention)) {
                     self::deleteMessage(Arr::get($requestBase, 'message_id'), $chatId);
