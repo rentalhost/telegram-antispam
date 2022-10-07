@@ -17,8 +17,18 @@ class AntispamService
     {
         $haystack = file_get_contents('https://t.me/' . ltrim($mention, '@'));
 
-        return !str_contains($haystack, 'subscriber') &&
-               !str_contains($haystack, 'content=""');
+        if (str_contains($haystack, 'subscriber') ||
+            str_contains($haystack, 'content=""')) {
+            return false;
+        };
+
+        foreach (config('antispam.disallowedDescriptions') as $disallowedDescription) {
+            if (str_contains($haystack, $disallowedDescription)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public static function deleteMessage(int $messageId, int $chatId): void

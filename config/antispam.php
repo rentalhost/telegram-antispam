@@ -27,4 +27,10 @@ return [
         // Others.
         'twitch.tv',
     ],
+
+    'disallowedDescriptions' => [
+        'crypto',
+        'earn',
+        'income'
+    ]
 ];
